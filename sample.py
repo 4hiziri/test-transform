@@ -107,7 +107,7 @@ def get_trans_mat_from_senkai(trans_mat, senkai_rad):
 
     ret = np.dot(y_mut, ret)
 
-    print(ret)
+    # print(ret)
 
     return ret
 
@@ -140,10 +140,10 @@ def calc_buzai_angle_new(buzai_angle, a, b, c, d):
 
     [new_a, new_b, new_c, new_d] = [
         translate(trans_mat, p) for p in (a, b, c, d)]
-    print(new_a)
-    print(new_b)
-    print(new_c)
-    print(new_d)
+    # print(new_a)
+    # print(new_b)
+    # print(new_c)
+    # print(new_d)
 
     return (math.degrees(senkai_rad), math.degrees(keisya_rad))
 
@@ -157,10 +157,10 @@ def calc_buzai_angle_old(buzai_angle, a, b, c, d):
     keisya_rad = calc_angle(trans_mat, a, b, c, d, get_keisya)
     [new_a, new_b, new_c, new_d] = [
         translate(trans_mat, p) for p in (a, b, c, d)]
-    print(new_a)
-    print(new_b)
-    print(new_c)
-    print(new_d)
+    # print(new_a)
+    # print(new_b)
+    # print(new_c)
+    # print(new_d)
 
     return (math.degrees(senkai_rad), math.degrees(keisya_rad))
 
@@ -179,29 +179,29 @@ def easy_test(a, b, c, d):
 
 def test_data(a, b, c, d, buzai_angle):
     (senkai, keisya) = calc_buzai_angle_new(buzai_angle, a, b, c, d)
-    return {'senkai': senkai, 'keisya': keisya}
+    return (senkai, keisya)
 
 
-def test(test_data):
-    (a, b, c, d, buzai_angle, correct_senkai, correct_keisya) = test_data
+def test(param):
+    (a, b, c, d, buzai_angle, correct_senkai, correct_keisya) = param
     senkai, keisya = test_data(a, b, c, d, buzai_angle)
 
-    if senkai == correct_senkai and keisya == correct_keisya:
+    if senkai != correct_senkai or keisya != correct_keisya:
         print('------------------------------')
         print('a = {}'.format(a))
         print('b = {}'.format(b))
         print('c = {}'.format(c))
         print('d = {}'.format(d))
         print('angle = {}'.format(buzai_angle))
-        print('correct senkai is {}'.format(correct_senkai))
+        print('correct senkai = {}'.format(correct_senkai))
         print('senkai = {}'.format(senkai))
-        print('correct keisya is {}'.format(correct_keisya))
-        print('senkai = {}'.format(keisya))
+        print('correct keisya = {}'.format(correct_keisya))
+        print('keisya = {}'.format(keisya))
         print('------------------------------')
 
 
 def get_buzai_angle(string):
-    direction, side = string.split(':')
+    direction, side = string.strip().split(':')
 
     if direction == 'dy':
         if side == 'noki':
@@ -230,7 +230,10 @@ def parse_test_data(filename):
     ret_l = []
     with open(filename, 'r') as f:
         while True:
-            buzai_angle = get_buzai_angle(f.readline())
+            angle_str = f.readline()
+            if angle_str == '':
+                break
+            buzai_angle = get_buzai_angle(angle_str)
             correct_keisya = float(f.readline().split('=')[1])
             correct_senkai = float(f.readline().split('=')[1])
             a = parse_point(f.readline())
