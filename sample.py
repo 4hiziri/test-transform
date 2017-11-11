@@ -1,10 +1,7 @@
 import numpy as np
 import math
 
-# 横のみ考える
-# sample, change for acutual software setting
-t = np.array((7, 3, 2))
-
+# TODO: 可視化
 
 # Return R
 # buzai_angle is angle of buzai on roof from x-axis
@@ -12,7 +9,26 @@ t = np.array((7, 3, 2))
 #  ==. is 0
 # '== is 180
 # ref No6 how to calc axis
+# TODO: angle = 0, 90, 180, 270, then return const
 def get_rotate(buzai_angle):
+    buzai_angle = buzai_angle % 360
+    if buzai_angle == 0:
+        return np.array([[0, 1, 0],
+                         [0, 0, 1],
+                         [-1, 0, 0]])
+    elif buzai_angle == 90:
+        return np.array([[-1, 0, 0],
+                         [0, 0, 1],
+                         [0, -1, 0]])
+    elif buzai_angle == 180:
+        return np.array([[0, -1, 0],
+                         [0, 0, 1],
+                         [1, 0, 0]])
+    elif buzai_angle == 270:
+        return np.array([[1, 0, 0],
+                         [0, 0, 1],
+                         [0, 1, 0]])
+
     angle = math.radians(buzai_angle)
 
     def calc_x(angle):
@@ -74,17 +90,17 @@ def calc_plane_param(p, q, r, s):
 
 
 # return degrees
-def get_senkai(abcd):
-    b = abcd[1]
-    c = abcd[2]
+def get_senkai(abc):
+    b = abc[1]
+    c = abc[2]
 
-    # if b == 0, this means plain is wrong.
-    return math.pi / 2 - math.atan(- c / b)
+    # if c == 0, this means plain is wrong.
+    return math.atan(- b / c)
 
 
-def get_keisya(abcd):
-    a = abcd[0]
-    c = abcd[2]
+def get_keisya(abc):
+    a = abc[0]
+    c = abc[2]
 
     # if c == 0, this means plain is wrong
     return math.atan(- a / c)
@@ -112,66 +128,38 @@ def get_trans_mat_from_senkai(trans_mat, senkai_rad):
     return ret
 
 
-def get_vert(trans_mat, a, b, c, d):
-    [new_a, new_b, new_c, new_d] = [
-        translate(trans_mat, p) for p in (a, b, c, d)]
-
-    return calc_plane_param(new_a, new_b, new_c, new_d)
+def get_vert(a, b, c, d):
+    return calc_plane_param(a, b, c, d)[0:3]
 
 
 def calc_angle(trans_mat, a, b, c, d, angle_getter):
     return angle_getter(get_vert(trans_mat, a, b, c, d))
 
 
+def get_angle_vecs(vec1, vec2):
+    len1 = np.linalg.norm(vec1)
+    len2 = np.linalg.norm(vec2)
+
+    return math.acos(np.dot(vec1, vec2) / (len1 * len2))
+
+
 def calc_buzai_angle_new(buzai_angle, a, b, c, d):
     trans_mat = get_rotate(buzai_angle)
-    plane_param = get_vert(trans_mat, a, b, c, d)
-    senkai_rad = get_senkai(plane_param)
-    # trans_mat = get_trans_mat_from_senkai(trans_mat, senkai_rad)
-    # print(trans_mat)
-
-    vert = np.array((0, plane_param[1], plane_param[2]))
-    plane = np.array((plane_param[:3]))
-    vert_len = np.linalg.norm(vert)
-    plane_len = np.linalg.norm(plane)
-
-    # keisya_rad = calc_angle(trans_mat, a, b, c, d, get_keisya)
-    keisya_rad = math.acos(np.dot(plane, vert) / (vert_len * plane_len))
 
     [new_a, new_b, new_c, new_d] = [
         translate(trans_mat, p) for p in (a, b, c, d)]
-    # print(new_a)
-    # print(new_b)
-    # print(new_c)
-    # print(new_d)
 
-    return (math.degrees(senkai_rad), math.degrees(keisya_rad))
+    plane = get_vert(new_a, new_b, new_c, new_d)
+    print(plane)
+    senkai_rad = get_senkai(plane)
 
-
-def calc_buzai_angle_old(buzai_angle, a, b, c, d):
-    trans_mat = get_rotate(buzai_angle)
-    senkai_rad = calc_angle(trans_mat, a, b, c, d, get_senkai)
-
-    # print(trans_mat)
-
-    keisya_rad = calc_angle(trans_mat, a, b, c, d, get_keisya)
-    [new_a, new_b, new_c, new_d] = [
-        translate(trans_mat, p) for p in (a, b, c, d)]
-    # print(new_a)
-    # print(new_b)
-    # print(new_c)
-    # print(new_d)
+    vert = np.array((0, plane[1], plane[2]))
+    keisya_rad = get_angle_vecs(vert, plane)
 
     return (math.degrees(senkai_rad), math.degrees(keisya_rad))
 
 
 def easy_test(a, b, c, d):
-    print('old______')
-    (senkai, keisya) = calc_buzai_angle_old(0, a, b, c, d)
-    print("旋回: " + str(senkai))
-    print("傾斜: " + str(keisya))
-
-    print('new______')
     (senkai, keisya) = calc_buzai_angle_new(0, a, b, c, d)
     print("旋回: " + str(senkai))
     print("傾斜: " + str(keisya))
@@ -234,8 +222,8 @@ def parse_test_data(filename):
             if angle_str == '':
                 break
             buzai_angle = get_buzai_angle(angle_str)
-            correct_keisya = float(f.readline().split('=')[1])
-            correct_senkai = float(f.readline().split('=')[1])
+            correct_keisya = -1  # float(f.readline().split('=')[1])
+            correct_senkai = -1  # float(f.readline().split('=')[1])
             a = parse_point(f.readline())
             b = parse_point(f.readline())
             c = parse_point(f.readline())
