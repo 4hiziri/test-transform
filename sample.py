@@ -79,7 +79,7 @@ def get_senkai(abcd):
     c = abcd[2]
 
     # if b == 0, this means plain is wrong.
-    return math.atan(- c / b)
+    return math.pi/2 - math.atan(- c / b)
 
 
 def get_keisya(abcd):
@@ -105,7 +105,7 @@ def get_trans_mat_from_senkai(trans_mat, senkai_rad):
     # ret[1] = np.array((- math.cos(senkai_rad), 0, math.sin(senkai_rad)))
     # print(np.dot(y_mut, y_axis))
 
-    ret = np.dot(next_trans, ret)
+    ret = np.dot(y_mut, ret)
 
     print(ret)
 
