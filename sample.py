@@ -79,7 +79,7 @@ def get_senkai(abcd):
     c = abcd[2]
 
     # if b == 0, this means plain is wrong.
-    return math.pi/2 - math.atan(- c / b)
+    return math.pi / 2 - math.atan(- c / b)
 
 
 def get_keisya(abcd):
@@ -165,12 +165,7 @@ def calc_buzai_angle_old(buzai_angle, a, b, c, d):
     return (math.degrees(senkai_rad), math.degrees(keisya_rad))
 
 
-def test():
-    a = np.array((3, 3, 2))
-    b = np.array((5, 3, 1))
-    c = np.array((5, 2, 2))
-    d = np.array((3, 2, 3))
-
+def easy_test(a, b, c, d):
     print('old______')
     (senkai, keisya) = calc_buzai_angle_old(0, a, b, c, d)
     print("旋回: " + str(senkai))
@@ -180,3 +175,84 @@ def test():
     (senkai, keisya) = calc_buzai_angle_new(0, a, b, c, d)
     print("旋回: " + str(senkai))
     print("傾斜: " + str(keisya))
+
+
+def test_data(a, b, c, d, buzai_angle):
+    (senkai, keisya) = calc_buzai_angle_new(buzai_angle, a, b, c, d)
+    return {'senkai': senkai, 'keisya': keisya}
+
+
+def test(test_data):
+    (a, b, c, d, buzai_angle, correct_senkai, correct_keisya) = test_data
+    senkai, keisya = test_data(a, b, c, d, buzai_angle)
+
+    if senkai == correct_senkai and keisya == correct_keisya:
+        print('------------------------------')
+        print('a = {}'.format(a))
+        print('b = {}'.format(b))
+        print('c = {}'.format(c))
+        print('d = {}'.format(d))
+        print('angle = {}'.format(buzai_angle))
+        print('correct senkai is {}'.format(correct_senkai))
+        print('senkai = {}'.format(senkai))
+        print('correct keisya is {}'.format(correct_keisya))
+        print('senkai = {}'.format(keisya))
+        print('------------------------------')
+
+
+def get_buzai_angle(string):
+    direction, side = string.split(':')
+
+    if direction == 'dy':
+        if side == 'noki':
+            return 270
+        elif side == 'mune':
+            return 90
+        else:
+            print('dy side error: {}'.format(side))
+    elif direction == 'dx':
+        print('Not impl dx!')
+        exit(1)
+    elif direction == 'dn':
+        print('Not impl dn!')
+        exit(1)
+    else:
+        print("Direction Error: {}".format(direction))
+        exit(1)
+
+
+def parse_point(string):
+    str_nums = string.strip('()').split(',')
+    return np.array([float(str_num) for str_num in str_nums])
+
+
+def parse_test_data(filename):
+    ret_l = []
+    with open(filename, 'r') as f:
+        while True:
+            buzai_angle = get_buzai_angle(f.readline())
+            correct_keisya = float(f.readline().split('=')[1])
+            correct_senkai = float(f.readline().split('=')[1])
+            a = parse_point(f.readline())
+            b = parse_point(f.readline())
+            c = parse_point(f.readline())
+            d = parse_point(f.readline())
+            ret_l.append((a, b, c, d, buzai_angle,
+                          correct_senkai, correct_keisya))
+    return ret_l
+
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) < 2:
+        a = np.array((3, 3, 2))
+        b = np.array((5, 3, 1))
+        c = np.array((5, 2, 2))
+        d = np.array((3, 2, 3))
+
+        test(a, b, c, d)
+    else:
+        testfile = sys.argv[1]
+        tests = parse_test_data(testfile)
+        for case in tests:
+            test(case)
