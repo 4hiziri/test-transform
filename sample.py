@@ -222,7 +222,7 @@ def get_buzai_angle(string):
 
 
 def parse_point(string):
-    str_nums = string.strip('()').split(',')
+    str_nums = string.strip().strip('()').split(',')
     return np.array([float(str_num) for str_num in str_nums])
 
 
