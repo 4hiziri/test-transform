@@ -1,0 +1,4 @@
+.python-version
+cpp-ver/
+*.txt
+__pycache__
