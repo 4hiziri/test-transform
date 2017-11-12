@@ -150,11 +150,14 @@ def calc_buzai_angle_new(buzai_angle, a, b, c, d):
         translate(trans_mat, p) for p in (a, b, c, d)]
 
     plane = get_vert(new_a, new_b, new_c, new_d)
-    print(plane)
     senkai_rad = get_senkai(plane)
 
-    vert = np.array((0, plane[1], plane[2]))
+    plane = np.array(plane)
+    vert = np.array((0, plane[1], plane[2]))    
     keisya_rad = get_angle_vecs(vert, plane)
+
+    print(plane)
+    print(vert)
 
     return (math.degrees(senkai_rad), math.degrees(keisya_rad))
 
@@ -222,8 +225,8 @@ def parse_test_data(filename):
             if angle_str == '':
                 break
             buzai_angle = get_buzai_angle(angle_str)
-            correct_keisya = -1  # float(f.readline().split('=')[1])
-            correct_senkai = -1  # float(f.readline().split('=')[1])
+            correct_keisya = float(f.readline().split('=')[1])
+            correct_senkai = float(f.readline().split('=')[1])
             a = parse_point(f.readline())
             b = parse_point(f.readline())
             c = parse_point(f.readline())
