@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 import sys
+import sample
 
 
 def get_buzai_angle(string):
@@ -50,74 +51,28 @@ def parse_test_data(filename):
     return ret_l
 
 
-# xs = np.random.rand(1, 100)
-# ys = np.random.rand(1, 100)
-# zs = np.random.rand(1, 100)
 data = parse_test_data(sys.argv[1])
 index = int(sys.argv[2])
 
 (a, b, c, d, _, _, _) = data[index]
-# a = np.array((5024, 4101.27, 3542.16))
-# b = np.array((4986, 4063.27, 3523.16))
-# c = np.array((4986, 4063.27, 3366.64))
-# d = np.array((5024, 4101.27, 3385.64))
+plane = sample.calc_plane_param(a, b, c, d)
 
-xs = np.array([[a[0], b[0], c[0], d[0]]])
-ys = np.array([[a[1], b[1], c[1], d[1]]])
-zs = np.array([[a[2], b[2], c[2], d[2]]])
+def calc(x, y):
+    (a, b, c, d) = plane
+    if c == 0:
+        c = 1
+
+    return (- x * a - y * b - d) / c
+
+x = np.arange(-3, 3, 0.25)
+y = np.arange(-3, 3, 0.25)
+X, Y = np.meshgrid(x, y)
+Z = calc(X, Y)
+
+print(X)
 
 fig = plt.figure()
 ax = Axes3D(fig)
-ax.scatter3D(xs, ys, zs)
+ax.plot_wireframe(X, Y, Z)
+
 plt.show()
-
-
-# # x = np.arange(-10, 10, 0.5)
-# # y = np.arange(-10, 10, 0.5)
-
-# x = np.array([7, 7, 7, 7])
-# y = np.array([5, 3, 3, 5])
-
-# X, Y = np.meshgrid(x, y)
-# # print("x = {}".format(x))
-# # print("X = {}".format(X))
-# # print("y = {}".format(y))
-# # print("Y = {}".format(Y))
-
-# Z = np.sin(x) + np.cos(Y)
-# print(Z)
-# Z = np.array([2, 2, 1, 1])
-
-# fig = plt.figure()
-# ax = Axes3D(fig)
-# ax.plot_wireframe(X, Y, Z)
-
-# plt.show()
-
-
-# def getSpin(rad, axis):
-#     cos = math.cos(rad)
-#     sin = math.sin(rad)
-#     if axis == 'x':
-#         return np.array([[1.0, 0, 0],
-#                          [0, cos, -sin],
-#                          [0, sin, cos]])
-#     elif axis == 'y':
-#         return np.array([[cos, 0, -sin],
-#                          [0, 1.0, 0],
-#                          [sin, 0, cos]])
-#     elif axis == 'z':
-#         return np.array([[cos, -sin, 0],
-#                          [sin, cos, 0],
-#                          [0, 0, 1.0]])
-
-# # 4x4
-# def getTransMat(R, t):
-#     pass
-
-
-# # V vector
-# # R spin
-# # t translation
-# def view_change(V, R, t):
-#     pass

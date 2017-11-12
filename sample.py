@@ -190,6 +190,8 @@ def test(param):
         print('keisya = {}'.format(keisya))
         print('------------------------------')
 
+    return (senkai, keisya)
+
 
 def get_buzai_angle(string):
     direction, side = string.strip().split(':')
@@ -244,7 +246,7 @@ if __name__ == '__main__':
         c = np.array((5, 2, 2))
         d = np.array((3, 2, 3))
 
-        test(a, b, c, d)
+        easy_test(a, b, c, d)
     else:
         testfile = sys.argv[1]
         tests = parse_test_data(testfile)
