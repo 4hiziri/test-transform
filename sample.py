@@ -172,9 +172,6 @@ def calc_buzai_angle_new(buzai_angle, a, b, c, d):
     vert = np.array((0, plane[1], plane[2]))
     keisya_rad = get_angle_vecs(vert, plane)
 
-    print(plane)
-    print(vert)
-
     return (math.degrees(senkai_rad), math.degrees(keisya_rad))
 
 
