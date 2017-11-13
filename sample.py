@@ -1,7 +1,15 @@
 import numpy as np
 import math
 
-# TODO: 可視化
+
+def rotate(point):
+    theta = math.atan(1 / 2)
+    rmat = np.array([[1.0, 0, 0],
+                     [0, math.cos(theta), - math.sin(theta)],
+                     [0, math.sin(theta), math.cos(theta)]])
+
+    return np.dot(rmat, point)
+
 
 # Return R
 # buzai_angle is angle of buzai on roof from x-axis
@@ -139,8 +147,16 @@ def calc_angle(trans_mat, a, b, c, d, angle_getter):
 def get_angle_vecs(vec1, vec2):
     len1 = np.linalg.norm(vec1)
     len2 = np.linalg.norm(vec2)
+    cos = np.dot(vec1, vec2) / (len1 * len2)
 
-    return math.acos(np.dot(vec1, vec2) / (len1 * len2))
+    if cos > 1:
+        if (cos - 1) > 0.0000001:
+            print("Error! get_angle_vecs: {}".format(cos))
+            exit(1)
+        else:
+            cos = 1
+
+    return math.acos(cos)
 
 
 def calc_buzai_angle_new(buzai_angle, a, b, c, d):
@@ -153,7 +169,7 @@ def calc_buzai_angle_new(buzai_angle, a, b, c, d):
     senkai_rad = get_senkai(plane)
 
     plane = np.array(plane)
-    vert = np.array((0, plane[1], plane[2]))    
+    vert = np.array((0, plane[1], plane[2]))
     keisya_rad = get_angle_vecs(vert, plane)
 
     print(plane)
@@ -175,6 +191,10 @@ def test_data(a, b, c, d, buzai_angle):
 
 def test(param):
     (a, b, c, d, buzai_angle, correct_senkai, correct_keisya) = param
+    a = rotate(a)
+    b = rotate(b)
+    c = rotate(c)
+    d = rotate(d)
     senkai, keisya = test_data(a, b, c, d, buzai_angle)
 
     if senkai != correct_senkai or keisya != correct_keisya:

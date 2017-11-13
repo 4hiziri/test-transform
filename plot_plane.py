@@ -6,6 +6,15 @@ import sys
 import sample
 
 
+def rotate(point):
+    theta = math.atan(1 / 2)
+    rmat = np.array([[1.0, 0, 0],
+                     [0, math.cos(theta), - math.sin(theta)],
+                     [0, math.sin(theta), math.cos(theta)]])
+
+    return np.dot(rmat, point)
+
+
 def get_buzai_angle(string):
     direction, side = string.strip().split(':')
 
@@ -55,7 +64,13 @@ data = parse_test_data(sys.argv[1])
 index = int(sys.argv[2])
 
 (a, b, c, d, _, _, _) = data[index]
+a = rotate(a)
+b = rotate(b)
+c = rotate(c)
+d = rotate(d)
+
 plane = sample.calc_plane_param(a, b, c, d)
+
 
 def calc(x, y):
     (a, b, c, d) = plane
@@ -63,6 +78,7 @@ def calc(x, y):
         c = 1
 
     return (- x * a - y * b - d) / c
+
 
 x = np.arange(-3, 3, 0.25)
 y = np.arange(-3, 3, 0.25)
