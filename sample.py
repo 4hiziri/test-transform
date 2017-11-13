@@ -217,10 +217,18 @@ def get_buzai_angle(string):
         else:
             print('dy side error: {}'.format(side))
     elif direction == 'dx':
-        print('Not impl dx!')
+        if side == 'noki':
+            pass
+        elif side == 'mune':
+            pass
+        print('Not impl!')
         exit(1)
     elif direction == 'dn':
-        print('Not impl dn!')
+        if side == 'noki':
+            pass
+        elif side == 'mune':
+            pass
+        print("Not impl")
         exit(1)
     else:
         print("Direction Error: {}".format(direction))
