@@ -190,11 +190,7 @@ def test_data(a, b, c, d, buzai_angle):
 
 
 def test(param):
-    (a, b, c, d, buzai_angle, correct_senkai, correct_keisya) = param
-    a = rotate(a)
-    b = rotate(b)
-    c = rotate(c)
-    d = rotate(d)
+    (a, b, c, d, buzai_angle, correct_senkai, correct_keisya) = param    
     senkai, keisya = test_data(a, b, c, d, buzai_angle)
 
     if senkai != correct_senkai or keisya != correct_keisya:
@@ -239,7 +235,7 @@ def parse_point(string):
     return np.array([float(str_num) for str_num in str_nums])
 
 
-def parse_test_data(filename):
+def parse_tests(filename):
     ret_l = []
     with open(filename, 'r') as f:
         while True:
@@ -247,12 +243,24 @@ def parse_test_data(filename):
             if angle_str == '':
                 break
             buzai_angle = get_buzai_angle(angle_str)
-            correct_keisya = float(f.readline().split('=')[1])
+            # I have no idea but this is wrong.
+            # Actually, keisya -> senkai, senkai -> keisya.
+            # So reveses them
+            # correct_keisya = float(f.readline().split('=')[1])
+            # correct_senkai = float(f.readline().split('=')[1])
             correct_senkai = float(f.readline().split('=')[1])
+            correct_keisya = float(f.readline().split('=')[1])
             a = parse_point(f.readline())
             b = parse_point(f.readline())
             c = parse_point(f.readline())
             d = parse_point(f.readline())
+            # I have no idea but point is not correct.
+            # Need rotate by roof gradient.
+            a = rotate(a)
+            b = rotate(b)
+            c = rotate(c)
+            d = rotate(d)
+            
             ret_l.append((a, b, c, d, buzai_angle,
                           correct_senkai, correct_keisya))
     return ret_l
@@ -269,6 +277,6 @@ if __name__ == '__main__':
         easy_test(a, b, c, d)
     else:
         testfile = sys.argv[1]
-        tests = parse_test_data(testfile)
+        tests = parse_tests(testfile)
         for case in tests:
             test(case)
