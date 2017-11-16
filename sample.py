@@ -223,11 +223,12 @@ def get_buzai_angle(string):
             pass
         print('Not impl!')
         exit(1)
-    elif direction == 'dn':
+    elif direction[0:2] == 'dn':
+        angle = direction.split(",")[1]
         if side == 'noki':
-            pass
+            return -1
         elif side == 'mune':
-            pass
+            return -1
         print("Not impl")
         exit(1)
     else:

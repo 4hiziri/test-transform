@@ -27,9 +27,8 @@ def get_buzai_angle(string):
     elif direction == 'dx':
         print('Not impl dx!')
         exit(1)
-    elif direction == 'dn':
-        print('Not impl dn!')
-        exit(1)
+    elif direction[0:2] == 'dn':
+        return -1
     else:
         print("Direction Error: {}".format(direction))
         exit(1)
