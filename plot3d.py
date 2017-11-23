@@ -2,10 +2,10 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
-import calcangle
+import testparser
 
 if __name__ == '__main__':
-    data = calcangle.parse_tests(sys.argv[1])
+    data = testparser.parse_tests(sys.argv[1])
     index = int(sys.argv[2])
 
     (a, b, c, d, _, _, _) = data[index]
