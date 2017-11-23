@@ -11,8 +11,6 @@ def rotate(point):
     return np.dot(rmat, point)
 
 
-
-
 def get_buzai_angle(string):
     direction, side = string.strip().split(':')
 

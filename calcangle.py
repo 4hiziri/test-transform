@@ -179,7 +179,7 @@ def exec_test(a, b, c, d, buzai_angle):
 
 
 def print_test(param):
-    (a, b, c, d, buzai_angle, correct_senkai, correct_keisya) = param    
+    (a, b, c, d, buzai_angle, correct_senkai, correct_keisya) = param
     senkai, keisya = exec_test(a, b, c, d, buzai_angle)
 
     if senkai != correct_senkai or keisya != correct_keisya:
@@ -196,6 +196,7 @@ def print_test(param):
         print('------------------------------')
 
     return (senkai, keisya)
+
 
 if __name__ == '__main__':
     import sys
