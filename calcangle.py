@@ -178,11 +178,11 @@ def exec_test(a, b, c, d, buzai_angle):
     return (senkai, keisya)
 
 
-def print_test(param):
+def print_test(param, is_print=False):
     (a, b, c, d, buzai_angle, correct_senkai, correct_keisya) = param
     senkai, keisya = exec_test(a, b, c, d, buzai_angle)
 
-    if senkai != correct_senkai or keisya != correct_keisya:
+    if is_print or senkai != correct_senkai or keisya != correct_keisya:
         print('------------------------------')
         print('a = {}'.format(a))
         print('b = {}'.format(b))
@@ -211,4 +211,4 @@ if __name__ == '__main__':
         testfile = sys.argv[1]
         tests = testparser.parse_tests(testfile)
         for case in tests:
-            print_test(case)
+            print_test(case, True)
