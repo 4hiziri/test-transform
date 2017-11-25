@@ -2,8 +2,8 @@ import numpy as np
 import math
 
 
-def rotate(point):
-    theta = math.atan(1 / 2)
+def rotate(point, rad):
+    theta = math.atan(rad)
     rmat = np.array([[1.0, 0, 0],
                      [0, math.cos(theta), - math.sin(theta)],
                      [0, math.sin(theta), math.cos(theta)]])
@@ -22,12 +22,11 @@ def get_buzai_angle(string):
         else:
             print('dy side error: {}'.format(side))
     elif direction == 'dx':
-        if side == 'noki':
-            pass
-        elif side == 'mune':
-            pass
-        print('Not impl!')
-        exit(1)
+        side = side.split('_')[0]
+        if side == 'right':
+            return 0
+        elif side == 'left':
+            return 180
     elif direction[0:2] == 'dn':
         angle = direction.split(",")[1]
         if side == 'noki':
@@ -67,10 +66,10 @@ def parse_tests(filename):
             d = parse_point(f.readline())
             # I have no idea but point is not correct.
             # Need rotate by roof gradient.
-            a = rotate(a)
-            b = rotate(b)
-            c = rotate(c)
-            d = rotate(d)
+            a = rotate(a, 1/2)
+            b = rotate(b, 1/2)
+            c = rotate(c, 1/2)
+            d = rotate(d, 1/2)
 
             ret_l.append((a, b, c, d, buzai_angle,
                           correct_senkai, correct_keisya))
