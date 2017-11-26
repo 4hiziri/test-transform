@@ -28,14 +28,15 @@ def parse_dy(side):
 
 
 def parse_dn(side):
-    angle = side.split("_")[1]
+    angle = float(side.split("_")[1])
     side = side.split("_")[0]
     if side == 'noki':
-        return -1
+        return angle
     elif side == 'mune':
-        return -1
-    print("Not impl")
-    exit(1)
+        return angle + 180
+    else:
+        print("Error parse_dn")
+        exit(1)
 
 
 def get_buzai_angle(string):
