@@ -11,16 +11,30 @@ def rotate(point):
     return np.dot(rmat, point)
 
 
+def parse_dy(side):
+    if side == 'noki':
+        return 270
+    elif side == 'mune':
+        return 90
+    else:
+        print('dy side error: {}'.format(side))
+
+
+def parse_dn(side):
+    angle = direction.split(",")[1]
+    if side == 'noki':
+        return -1
+    elif side == 'mune':
+        return -1
+    print("Not impl")
+    exit(1)
+
+
 def get_buzai_angle(string):
     direction, side = string.strip().split(':')
 
     if direction == 'dy':
-        if side == 'noki':
-            return 270
-        elif side == 'mune':
-            return 90
-        else:
-            print('dy side error: {}'.format(side))
+        return parse_dy(side)
     elif direction == 'dx':
         if side == 'noki':
             pass
@@ -29,13 +43,7 @@ def get_buzai_angle(string):
         print('Not impl!')
         exit(1)
     elif direction[0:2] == 'dn':
-        angle = direction.split(",")[1]
-        if side == 'noki':
-            return -1
-        elif side == 'mune':
-            return -1
-        print("Not impl")
-        exit(1)
+        
     else:
         print("Direction Error: {}".format(direction))
         exit(1)
