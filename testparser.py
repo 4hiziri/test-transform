@@ -2,8 +2,8 @@ import numpy as np
 import math
 
 
-def rotate(point, rad):
-    theta = math.atan(rad)
+def rotate(point, grad):
+    theta = math.atan(grad)
     rmat = np.array([[1.0, 0, 0],
                      [0, math.cos(theta), - math.sin(theta)],
                      [0, math.sin(theta), math.cos(theta)]])
@@ -28,14 +28,15 @@ def parse_dy(side):
 
 
 def parse_dn(side):
-    angle = side.split("_")[1]
+    angle = float(side.split("_")[1])
     side = side.split("_")[0]
     if side == 'noki':
-        return -1
+        return angle
     elif side == 'mune':
-        return -1
-    print("Not impl")
-    exit(1)
+        return angle + 180
+    else:
+        print("Error parse_dn")
+        exit(1)
 
 
 def get_buzai_angle(string):
@@ -60,6 +61,7 @@ def parse_point(string):
 def parse_tests(filename):
     ret_l = []
     with open(filename, 'r') as f:
+        yane_angle = int(f.readline())
         while True:
             angle_str = f.readline()
             if angle_str == '':
@@ -78,10 +80,10 @@ def parse_tests(filename):
             d = parse_point(f.readline())
             # I have no idea but point is not correct.
             # Need rotate by roof gradient.
-            a = rotate(a, 1/2)
-            b = rotate(b, 1/2)
-            c = rotate(c, 1/2)
-            d = rotate(d, 1/2)
+            a = rotate(a, yane_angle / 10)
+            b = rotate(b, yane_angle / 10)
+            c = rotate(c, yane_angle / 10)
+            d = rotate(d, yane_angle / 10)
 
             ret_l.append((a, b, c, d, buzai_angle,
                           correct_senkai, correct_keisya))
